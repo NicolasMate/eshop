@@ -22,7 +22,7 @@ class UserTable(DBTable):
         :param user_id:
         :return:
         """
-        res = self.execute_query(f"SELECT count(*) FROM user WHERE id=?", (user_id,))
+        res = self.execute_query(f"SELECT count(*) FROM user WHERE id=?", user_id,)
         data = res.fetchone()[0]
         if data == 0:
             return False
