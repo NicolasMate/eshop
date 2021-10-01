@@ -8,13 +8,20 @@ import sqlite3
 # over here is main table for user table user functions
 
 class UserTable(DBTable):
-    # creating database file if not existing
     def create_table(self):
+        """
+        Creating database file if not existing
+        """
         q = 'CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, name text, surname text, ' \
             'phone text, year int, email text, password text, CONSTRAINT unq_mail UNIQUE (email)); '
         self.execute_query(q)
 
     def check_user(self, user_id):
+        """
+        Function that check if user is existing based on id
+        :param user_id:
+        :return:
+        """
         res = self.execute_query(f"SELECT count(*) FROM user WHERE id=?", (user_id,))
         data = res.fetchone()[0]
         if data == 0:
@@ -22,8 +29,16 @@ class UserTable(DBTable):
         else:
             return True
 
-    # function for adding user
     def user_add(self, name, surname, phone, year, email, password):
+        """
+        Function for adding user
+        :param name:
+        :param surname:
+        :param phone:
+        :param year:
+        :param email:
+        :param password:
+        """
         print(f"Creating new user {name}, {surname}, {phone}, {year}, {email}")
         password_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
 
@@ -40,8 +55,10 @@ class UserTable(DBTable):
 
         self.commit()
 
-    # function for listing all users
     def list(self):
+        """
+        Function for listing all users
+        """
         query = 'select * from user;'
         res = self.execute_query(query)
         for row in res:
@@ -49,8 +66,11 @@ class UserTable(DBTable):
             print(json_string)
         print("Listing all users")
 
-    # function for deleting user based on his id
     def delete(self, user_id):
+        """
+        Function for deleting user based on his id
+        :param user_id:
+        """
         user_exists = self.check_user(user_id)
         if user_exists:
             print(f"Deleting user with id {user_id}")
@@ -60,8 +80,12 @@ class UserTable(DBTable):
             print("Can not find user")
             exit(1)
 
-    # function for editing users using kwargs
     def modify(self, user_id, **kwargs):
+        """
+        Function for editing users using kwargs
+        :param user_id:
+        :param kwargs:
+        """
         user_exists = self.check_user(user_id)
         if user_exists:
             print(f"Modifying user with id {user_id}")
